@@ -40,7 +40,7 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		//scrMedia.Pause ();
 	}
 	
 	void OnGUI() {
@@ -52,6 +52,7 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 			if(currentVideoIndex != 0){
 				currentVideoIndex -= 1;
 				scrMedia.Load(""+strVideoName[currentVideoIndex]);
+				//scrMedia.Play();
 				m_bFinish = false;
 			}
 		}
@@ -64,6 +65,7 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 			if(currentVideoIndex != strVideoName.Length-1){
 				currentVideoIndex += 1;
 				scrMedia.Load(""+strVideoName[currentVideoIndex]);
+				//scrMedia.Play();
 				m_bFinish = false;
 			}
 		}
@@ -73,6 +75,7 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 			if(currentVideoIndex != strVideoName.Length-1){
 				currentVideoIndex += 1;
 				scrMedia.Load(""+strVideoName[currentVideoIndex]);
+				//scrMedia.Play();
 				m_bFinish = false;
 			}
 		}
@@ -85,13 +88,14 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 			m_bFinish = false;
 		}
 
+		 */
 
 		if( GUI.Button(new Rect(22*(Screen.width/spaceBtnW),7*(Screen.height/spaceBtnH),btnWidth,btnHeight),"Reload"))
 		{
 			scrMedia.Load(""+strVideoName[currentVideoIndex]);
 			m_bFinish = false;
 		}
-		
+
 		if( GUI.Button(new Rect(22*(Screen.width/spaceBtnW),22*(Screen.height/spaceBtnH),btnWidth,btnHeight),"Play"))
 		{
 			scrMedia.Play();
@@ -103,7 +107,7 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 			scrMedia.Pause();
 		}
 
-
+		/*
 		if( GUI.Button(new Rect(4*(Screen.width/spaceBtnW),(Screen.height/spaceBtnH),btnWidth,btnHeight),"SeekTo"))
 		{
 			scrMedia.SeekTo(10000);
