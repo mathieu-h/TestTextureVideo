@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class MediaPlayerSampleGUICustom : MonoBehaviour {
 	
@@ -69,6 +70,7 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 	}
 
 	private void LoadNextVideo(){
+
 		// Change current plane visibility with renderer
 		currentVideoIndex += 1;
 		//videoManagers[currentVideoIndex].GetComponent<MeshRenderer>().enabled = true;
@@ -76,15 +78,16 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 		//Color planeColor = videoManagers [currentVideoIndex].GetComponent<MeshRenderer> ().materials[0].color;
 		//planeColor.a = 0;
 		//videoManagers [currentVideoIndex].GetComponent<MeshRenderer> ().materials[0].color = planeColor;
+		MediaPlayerCtrlCustom mpcc = videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom> ();
 
 		videoManagers[currentVideoIndex].gameObject.transform.Translate(0,-100,0);
 		videoManagers[currentVideoIndex-1].gameObject.transform.Translate(0,100,0);
 		// callback to fullscreen script to resize the plane
 		mdpFSC.SetNewVM(videoManagers[currentVideoIndex]);
 		// Reset the video and play
-		videoManagers[currentVideoIndex].GetComponent<MediaPlayerCtrlCustom>().Stop();
-		videoManagers[currentVideoIndex].GetComponent<MediaPlayerCtrlCustom>().SeekTo(0);
-		videoManagers[currentVideoIndex].GetComponent<MediaPlayerCtrlCustom>().Play();
+		mpcc.Stop();
+		mpcc.SeekTo(0);
+		mpcc.Play();
 	}
 
 	private void LoadPrevVideo(){
@@ -93,22 +96,20 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 	}
 
 	void OnGUI() {
-
-		if (videoManagers[currentVideoIndex].GetComponent<MediaPlayerCtrlCustom>().GetSeekPosition() == videoManagers[currentVideoIndex].GetComponent<MediaPlayerCtrlCustom>().GetDuration()) {
+		MediaPlayerCtrlCustom mpcc = videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom> ();
+		if (mpcc.GetSeekPosition() == mpcc.GetDuration()) {
 			// Go to previous animation
 			if (GUI.RepeatButton (new Rect (0, (Screen.height) - (Screen.width / nextPrevSizeDivider), Screen.width / nextPrevSizeDivider, Screen.width / nextPrevSizeDivider), "Previous")) {
-				if (scrMedia.GetCurrentState() != MediaPlayerCtrlCustom.MEDIAPLAYER_STATE.PLAYING) {
-					if (currentVideoIndex != 0) {
-						LoadPrevVideo ();
-						//scrMedia.Play();
-						m_bFinish = false;
-					}
+				if (currentVideoIndex != 0) {
+					LoadPrevVideo ();
+					//scrMedia.Play();
+					m_bFinish = false;
 				}
 			}
 
 			// Go to previous animation
 			if (GUI.RepeatButton (new Rect (0, 0, Screen.width / nextPrevSizeDivider, Screen.width / nextPrevSizeDivider), "Next")) {
-				if (currentVideoIndex < strVideoName.Length - 1) {
+				if (currentVideoIndex < strVideoName.Length-1) {
 					LoadNextVideo ();
 					m_bFinish = false;
 				} else {
@@ -116,11 +117,13 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 				}
 			}
 			
-			
+			//try{
+
 			// If we are at the seventh animation, the following animations will have two NextAnimation buttons because there is two balls 
 			// I switched the X and Y positions since the buttons just have to be positionned symmetrically
 			// 5 bcoz there is 8 animations, so 8-1-2 because we are in an array and this behaviour must be actived from the sixth animation
-			if (currentVideoIndex > 5) {
+			if (currentVideoIndex > 5 && currentVideoIndex < strVideoName.Length-1) {
+
 				Rect btn = new Rect (posXNextAnimBtn [currentVideoIndex] * sUnitX, posYNextAnimBtn [currentVideoIndex] * sUnitY, 
 				                    btnWidth * sizeBtnModifierX [currentVideoIndex], btnHeight * sizeBtnModifierY [currentVideoIndex]);
 
@@ -130,26 +133,30 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 				bool bBtn = GUI.RepeatButton (btn, "NextAnim");
 				bool bBtn2 = GUI.RepeatButton (btn2, "NextAnim2");
 				if ((bBtn | bBtn2) || (bBtn && bBtn2)) {
-					if (currentVideoIndex != strVideoName.Length - 1) {
+					if (currentVideoIndex < strVideoName.Length-1) {
 						LoadNextVideo ();
 						m_bFinish = false;
 					}
 				}
-			} else {
-				if (videoManagers[currentVideoIndex].GetComponent<MediaPlayerCtrlCustom>().GetCurrentState() != MediaPlayerCtrlCustom.MEDIAPLAYER_STATE.PLAYING 
-				    					&& scrMedia.GetSeekPosition() == scrMedia.GetDuration()) {
-					if (GUI.RepeatButton (new Rect (posXNextAnimBtn [currentVideoIndex] * sUnitX, posYNextAnimBtn [currentVideoIndex] * sUnitY, 
-					                        btnWidth * sizeBtnModifierX [currentVideoIndex], btnHeight * sizeBtnModifierY [currentVideoIndex]), "NextAnimation")) {
-						if (currentVideoIndex != strVideoName.Length - 1) {
-							LoadNextVideo ();
-							m_bFinish = false;
-						}
+			} else if(currentVideoIndex < strVideoName.Length-1){
+
+				if (GUI.RepeatButton (new Rect (posXNextAnimBtn [currentVideoIndex] * sUnitX, posYNextAnimBtn [currentVideoIndex] * sUnitY, 
+				                        btnWidth * sizeBtnModifierX [currentVideoIndex], btnHeight * sizeBtnModifierY [currentVideoIndex]), "NextAnimation")) {
+					if (currentVideoIndex < strVideoName.Length-1) {
+						LoadNextVideo ();
+						m_bFinish = false;
 					}
 				}
 			}
-			if(videoManagers[currentVideoIndex].GetComponent<MediaPlayerCtrlCustom>().GetSeekPosition() != 0){
+			
+			//}catch(IndexOutOfRangeException e){
+			//	Debug.Log(e.Message + " : INDEX :  " + currentVideoIndex );
+			//}
+			/*
+			if(mpcc.GetSeekPosition() != 0){
 				Debug.Log(""+scrMedia.GetSeekPosition()+" on " + scrMedia.GetDuration());
 			}
+			*/
 			//Debug.Log(""+scrMedia.GetSeekPosition());
 		}
 		
