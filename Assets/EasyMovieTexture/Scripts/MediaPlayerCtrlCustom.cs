@@ -514,7 +514,7 @@ public class MediaPlayerCtrlCustom : MonoBehaviour {
 	
 	void OnApplicationPause(bool bPause)
 	{
-		Debug.Log ("ApplicationPause : " +bPause);
+		//Debug.Log ("ApplicationPause : " +bPause);
 		if(bPause == true)
 		{
 

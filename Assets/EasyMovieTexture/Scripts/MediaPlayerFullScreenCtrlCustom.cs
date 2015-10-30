@@ -24,7 +24,10 @@ public class MediaPlayerFullScreenCtrlCustom : MonoBehaviour {
 	
 	}
 	
-	
+	public void SetNewVM(GameObject vm){
+		m_objVideo = vm;
+		Resize ();
+	}
 	
 	void Resize()
 	{
