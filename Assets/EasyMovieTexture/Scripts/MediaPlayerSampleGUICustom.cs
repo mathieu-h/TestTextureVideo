@@ -36,15 +36,23 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 	private float[] sizeBtnModifierX; 	
 	private float[] sizeBtnModifierY; 
 
+	private Boolean didBug = false;
+
 	private MediaPlayerFullScreenCtrlCustom mdpFSC;
-	
+
+	void OnEnable()
+	{
+
+
+	}
+
 	// Use this for initialization
 	void Start () {
 
-		for(int i=0; i<videoManagers.Length; i++){
+		/*for(int i=0; i<videoManagers.Length; i++){
 			GameObject go = videoManagers[i];
 			go.GetComponent<MediaPlayerCtrlCustom>().Load(""+strVideoName[i]);
-		}
+		}*/
 
 		scrMedia.OnEnd += OnEnd;
 		btnWidth = Screen.width/dividerW; 
@@ -71,9 +79,10 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 		sizeBtnModifierY = new float[8]{ 7, 5, 8, 14, 8, 8, 5, 5};
 		*/
 
-		mdpFSC = GetComponent<MediaPlayerFullScreenCtrlCustom> ();
-
-
+		mdpFSC = GetComponent<MediaPlayerFullScreenCtrlCustom> ();		
+		mdpFSC.SetNewVM(videoManagers[currentVideoIndex]);
+		MediaPlayerCtrlCustom mpcc = videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom> ();
+		mpcc.Play();
 	}
 	
 	// Update is called once per frame
@@ -97,7 +106,7 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 		mdpFSC.SetNewVM(videoManagers[currentVideoIndex]);
 		// Reset the video and play
 		mpcc.Stop();
-		mpcc.SeekTo(0);
+		//mpcc.SeekTo(200);
 		mpcc.Play();
 	}
 
@@ -107,10 +116,13 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 	}
 
 	void OnGUI() {
+		//Debug.Log ("Video index courant =" + currentVideoIndex);
 		MediaPlayerCtrlCustom mpcc = videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom> ();
-		// Go to previous animation
+		// Go to previous animation		
 
-		if (mpcc.GetSeekPosition() == mpcc.GetDuration() || mpcc.GetSeekPosition() == 0) {
+		if (mpcc.GetSeekPosition() == mpcc.GetDuration() || mpcc.GetDuration() == 0) {
+
+
 			if (GUI.RepeatButton (new Rect (0, (Screen.height) - (Screen.width / nextPrevSizeDivider), Screen.width / nextPrevSizeDivider, Screen.width / nextPrevSizeDivider), "Previous")) {
 				if (currentVideoIndex != 0) {
 					LoadPrevVideo ();
@@ -128,6 +140,7 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 				} else {
 					Application.LoadLevel (strNextScene);
 				}
+
 			}
 			
 			//try{
@@ -155,7 +168,10 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 
 				if (GUI.RepeatButton (new Rect (posXNextAnimBtn [currentVideoIndex] * sUnitX, posYNextAnimBtn [currentVideoIndex] * sUnitY, 
 				                        btnWidth * sizeBtnModifierX [currentVideoIndex], btnHeight * sizeBtnModifierY [currentVideoIndex]), "NextAnimation")) {
+					//Debug.Log ("NextAnimationBefore");
 					if (currentVideoIndex < strVideoName.Length-1) {
+						//Debug.Log ("Video index courant =" + currentVideoIndex);						
+						//Debug.Log ("NextAnimationInCondition");
 						LoadNextVideo ();
 						m_bFinish = false;
 					}
@@ -171,6 +187,9 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 			}
 			*/
 			//Debug.Log(""+scrMedia.GetSeekPosition());
+		}else{				
+			//Debug.Log ("Video SeekPosition courant = " + mpcc.GetSeekPosition() + " ----- Video GetDuration : " + mpcc.GetDuration());
+			//Debug.Log(mpcc.ToString());
 		}
 		
 	}
