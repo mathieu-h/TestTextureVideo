@@ -54,12 +54,23 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 		
 		int size = strVideoName.Length;
 		
-		posXNextAnimBtn = new float[8]{ 9, 19, 15, 17, 17, 17, 16, 16};
-		posYNextAnimBtn = new float[8]{ 1, 0, 1, 2, 18, 18, 3, 3};
-		
-		sizeBtnModifierX = new float[8]{ 4, 3, 3, 3, 3, 3, 2, 2};		
-		sizeBtnModifierY = new float[8]{ 5, 3, 5, 14, 3, 3, 2, 2};
-		
+		//posXNextAnimBtn = new float[8]{ 9, 19, 15, 17, 17, 17, 16, 16};
+		//posYNextAnimBtn = new float[8]{ 1, 0, 1, 2, 18, 18, 3, 3};
+
+		posXNextAnimBtn = new float[8]{ 4, 13, 4, 15, 4, 15, 21, 16};
+		posYNextAnimBtn = new float[8]{ 4, 13, 4, 15, 4, 15, 3, 6};
+
+		sizeBtnModifierX = new float[8]{ 3, 3, 3, 3, 3, 3, 3, 3};		
+		sizeBtnModifierY = new float[8]{ 3, 3, 3, 3, 3, 3, 3, 3};
+
+		/*
+		posXNextAnimBtn = new float[8]{ 8, 15, 12, 17, 16.75f, 16.75f, 15, 15};
+		posYNextAnimBtn = new float[8]{ 1, 0, 2, 2, 13.75f,  13.75f, 4, 4};
+
+		sizeBtnModifierX = new float[8]{ 6, 5, 5, 3, 4, 4, 3, 3};		
+		sizeBtnModifierY = new float[8]{ 7, 5, 8, 14, 8, 8, 5, 5};
+		*/
+
 		mdpFSC = GetComponent<MediaPlayerFullScreenCtrlCustom> ();
 
 
@@ -97,8 +108,9 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 
 	void OnGUI() {
 		MediaPlayerCtrlCustom mpcc = videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom> ();
-		if (mpcc.GetSeekPosition() == mpcc.GetDuration()) {
-			// Go to previous animation
+		// Go to previous animation
+
+		if (mpcc.GetSeekPosition() == mpcc.GetDuration() || mpcc.GetSeekPosition() == 0) {
 			if (GUI.RepeatButton (new Rect (0, (Screen.height) - (Screen.width / nextPrevSizeDivider), Screen.width / nextPrevSizeDivider, Screen.width / nextPrevSizeDivider), "Previous")) {
 				if (currentVideoIndex != 0) {
 					LoadPrevVideo ();
@@ -106,9 +118,10 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 					m_bFinish = false;
 				}
 			}
-
+			
 			// Go to previous animation
 			if (GUI.RepeatButton (new Rect (0, 0, Screen.width / nextPrevSizeDivider, Screen.width / nextPrevSizeDivider), "Next")) {
+				
 				if (currentVideoIndex < strVideoName.Length-1) {
 					LoadNextVideo ();
 					m_bFinish = false;
