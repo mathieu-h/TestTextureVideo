@@ -4,7 +4,7 @@ using System;
 
 public class MediaPlayerSampleGUICustom : MonoBehaviour {
 	
-	public MediaPlayerCtrlCustom scrMedia;
+	//public MediaPlayerCtrlCustom scrMedia;
 	
 	public string strNextScene;
 	
@@ -28,7 +28,7 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 	private float sUnitY;
 	
 	public bool m_bFinish = false;
-	
+	public bool hideGUI;
 	// Array of positions of the next button, one index for one animation (video)
 	private float[] posXNextAnimBtn;
 	private float[] posYNextAnimBtn; 
@@ -36,9 +36,10 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 	private float[] sizeBtnModifierX; 	
 	private float[] sizeBtnModifierY; 
 
-	private Boolean didBug = false;
+	//private Boolean didBug = false;
 
 	private MediaPlayerFullScreenCtrlCustom mdpFSC;
+	private MediaPlayerCtrlCustom mpccInit;
 
 	void OnEnable()
 	{
@@ -48,13 +49,7 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
-		/*for(int i=0; i<videoManagers.Length; i++){
-			GameObject go = videoManagers[i];
-			go.GetComponent<MediaPlayerCtrlCustom>().Load(""+strVideoName[i]);
-		}*/
-
-		scrMedia.OnEnd += OnEnd;
+		//scrMedia.OnEnd += OnEnd;
 		btnWidth = Screen.width/dividerW; 
 		btnHeight = Screen.height/dividerH;
 		sUnitX = Screen.width / spaceBtnW;
@@ -64,29 +59,42 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 		
 		//posXNextAnimBtn = new float[8]{ 9, 19, 15, 17, 17, 17, 16, 16};
 		//posYNextAnimBtn = new float[8]{ 1, 0, 1, 2, 18, 18, 3, 3};
-
-		posXNextAnimBtn = new float[8]{ 4, 13, 4, 15, 4, 15, 21, 16};
+		
+		/*posXNextAnimBtn = new float[8]{ 4, 13, 4, 15, 4, 15, 21, 16};
 		posYNextAnimBtn = new float[8]{ 4, 13, 4, 15, 4, 15, 3, 6};
-
+		
 		sizeBtnModifierX = new float[8]{ 3, 3, 3, 3, 3, 3, 3, 3};		
 		sizeBtnModifierY = new float[8]{ 3, 3, 3, 3, 3, 3, 3, 3};
-
-		/*
-		posXNextAnimBtn = new float[8]{ 8, 15, 12, 17, 16.75f, 16.75f, 15, 15};
-		posYNextAnimBtn = new float[8]{ 1, 0, 2, 2, 13.75f,  13.75f, 4, 4};
-
+		*/
+		
+		posXNextAnimBtn = new float[8]{ 8, 15, 12, 17, 16.75f, 16.75f, 15, 4};
+		posYNextAnimBtn = new float[8]{ 1, 0, 2, 2, 13.75f,  13.75f, 4, 15};
+		
 		sizeBtnModifierX = new float[8]{ 6, 5, 5, 3, 4, 4, 3, 3};		
 		sizeBtnModifierY = new float[8]{ 7, 5, 8, 14, 8, 8, 5, 5};
-		*/
-
 		mdpFSC = GetComponent<MediaPlayerFullScreenCtrlCustom> ();		
-		mdpFSC.SetNewVM(videoManagers[currentVideoIndex]);
-		MediaPlayerCtrlCustom mpcc = videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom> ();
-		mpcc.Play();
+		//mdpFSC.SetNewVM(videoManagers[0]);
+		
+		//Debug.Log (currentVideoIndex);
+		//mpccInit = videoManagers[0].GetComponent<MediaPlayerCtrlCustom> ();
+		//mpccInit.Stop();
+		//mpccInit.Load (strVideoName[0]);
+
+		//mpccInit.Play ();
+		//mpccInit.Play();
+		/*for(int i=0; i<videoManagers.Length; i++){
+			GameObject go = videoManagers[i];
+			go.GetComponent<MediaPlayerCtrlCustom>().Load(""+strVideoName[i]);
+		}*/
+		//mpccInit.Play();
 	}
+
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
+		//Debug.Log ("First video isPlayed");
+		//mpccInit.Stop();
+		//mpccInit.Play();
 	}
 
 	private void LoadNextVideo(){
@@ -103,24 +111,32 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 		videoManagers[currentVideoIndex].gameObject.transform.Translate(0,-100,0);
 		videoManagers[currentVideoIndex-1].gameObject.transform.Translate(0,100,0);
 		// callback to fullscreen script to resize the plane
-		mdpFSC.SetNewVM(videoManagers[currentVideoIndex]);
+		//mdpFSC.SetNewVM(videoManagers[currentVideoIndex]);
 		// Reset the video and play
-		mpcc.Stop();
+		//mpcc.Stop();
 		//mpcc.SeekTo(200);
 		mpcc.Play();
 	}
 
 	private void LoadPrevVideo(){
 		Application.LoadLevel("Scene_Balle");
-
+		MediaPlayerCtrlCustom mpcc = videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom> ();
+		//mdpFSC.SetNewVM(videoManagers[currentVideoIndex]);
+		mpcc.Stop();
+		mpcc.Play();
 	}
 
 	void OnGUI() {
+
+		if (hideGUI) 
+		{
+			GUI.backgroundColor = Color.clear;
+		}
 		//Debug.Log ("Video index courant =" + currentVideoIndex);
 		MediaPlayerCtrlCustom mpcc = videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom> ();
 		// Go to previous animation		
 
-		if (mpcc.GetSeekPosition() == mpcc.GetDuration() || mpcc.GetDuration() == 0) {
+		if (currentVideoIndex == 0 || mpcc.GetSeekPosition() == mpcc.GetDuration() || mpcc.GetDuration() == 0) {
 
 
 			if (GUI.RepeatButton (new Rect (0, (Screen.height) - (Screen.width / nextPrevSizeDivider), Screen.width / nextPrevSizeDivider, Screen.width / nextPrevSizeDivider), "Previous")) {
