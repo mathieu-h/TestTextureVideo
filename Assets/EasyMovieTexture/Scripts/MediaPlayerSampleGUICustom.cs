@@ -38,7 +38,7 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 
 	//private Boolean didBug = false;
 
-	private MediaPlayerFullScreenCtrlCustom mdpFSC;
+	//private MediaPlayerFullScreenCtrlCustom mdpFSC;
 	private MediaPlayerCtrlCustom mpccInit;
 
 	void OnEnable()
@@ -72,7 +72,7 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 		
 		sizeBtnModifierX = new float[8]{ 6, 5, 5, 3, 4, 4, 3, 3};		
 		sizeBtnModifierY = new float[8]{ 7, 5, 8, 14, 8, 8, 5, 5};
-		mdpFSC = GetComponent<MediaPlayerFullScreenCtrlCustom> ();		
+		//mdpFSC = GetComponent<MediaPlayerFullScreenCtrlCustom> ();		
 		//mdpFSC.SetNewVM(videoManagers[0]);
 		
 		//Debug.Log (currentVideoIndex);
@@ -98,10 +98,10 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 	}
 
 	private void LoadNextVideo(){
-		videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom>().gameObject.SetActive(false);
+		videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom> ().gameObject.SetActive (false);
 		//videoManagers [currentVideoIndex+1].GetComponent<MediaPlayerCtrlCustom>().gameObject.SetActive(true);
 		Debug.Log (currentVideoIndex);
-		if (currentVideoIndex < videoManagers.Length-2) {
+		if (currentVideoIndex < videoManagers.Length - 2) {
 			videoManagers [currentVideoIndex + 2].GetComponent<MediaPlayerCtrlCustom> ().gameObject.SetActive (true);
 		}
 
@@ -115,13 +115,17 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 		//videoManagers [currentVideoIndex].GetComponent<MeshRenderer> ().materials[0].color = planeColor;
 		MediaPlayerCtrlCustom mpcc = videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom> ();
 
-		videoManagers[currentVideoIndex].gameObject.transform.Translate(0,-100,0);
-		videoManagers[currentVideoIndex-1].gameObject.transform.Translate(0,100,0);
+		videoManagers [currentVideoIndex].gameObject.transform.Translate (0, -100, 0);
+		videoManagers [currentVideoIndex - 1].gameObject.transform.Translate (0, 100, 0);
 		// callback to fullscreen script to resize the plane
 		//mdpFSC.SetNewVM(videoManagers[currentVideoIndex]);
 		// Reset the video and play
 		//mpcc.Stop();
 		//mpcc.SeekTo(200);
+		if (currentVideoIndex == 8) {
+			videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom>().Load(""+strVideoName[currentVideoIndex]);
+		}
+		mpcc.Stop();
 		mpcc.Play();
 	}
 
