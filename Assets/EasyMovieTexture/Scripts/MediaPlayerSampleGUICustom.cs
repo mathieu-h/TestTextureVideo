@@ -158,7 +158,7 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 				}
 
 			}
-			
+
 			//try{
 
 			// If we are at the seventh animation, the following animations will have two NextAnimation buttons because there is two balls 
