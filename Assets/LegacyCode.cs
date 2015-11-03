@@ -69,3 +69,19 @@
 		videoManagers[currentVideoIndex].GetComponent<MediaPlayerCtrlCustom>().SeekTo(0);
 		videoManagers[currentVideoIndex].GetComponent<MediaPlayerCtrlCustom>().Play();
 	}*/
+
+
+
+//}catch(IndexOutOfRangeException e){
+//	Debug.Log(e.Message + " : INDEX :  " + currentVideoIndex );
+//}
+/*
+			if(mpcc.GetSeekPosition() != 0){
+				Debug.Log(""+scrMedia.GetSeekPosition()+" on " + scrMedia.GetDuration());
+			}
+			*/
+//Debug.Log(""+scrMedia.GetSeekPosition());
+//}else{				
+	//Debug.Log ("Video SeekPosition courant = " + mpcc.GetSeekPosition() + " ----- Video GetDuration : " + mpcc.GetDuration());
+	//Debug.Log(mpcc.ToString());
+//}
