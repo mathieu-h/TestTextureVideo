@@ -7,7 +7,8 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 	//public MediaPlayerCtrlCustom scrMedia;
 	
 	public string strNextScene;
-	
+
+
 	
 	public string[] strVideoName;
 	public GameObject[] videoManagers;
@@ -98,13 +99,11 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 	}
 
 	private void LoadNextVideo(){
-		videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom> ().gameObject.SetActive (false);
-		//videoManagers [currentVideoIndex+1].GetComponent<MediaPlayerCtrlCustom>().gameObject.SetActive(true);
 		Debug.Log (currentVideoIndex);
+		videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom> ().gameObject.SetActive (false);
 		if (currentVideoIndex < videoManagers.Length - 2) {
 			videoManagers [currentVideoIndex + 2].GetComponent<MediaPlayerCtrlCustom> ().gameObject.SetActive (true);
 		}
-
 		// Change current plane visibility with renderer
 		currentVideoIndex += 1;
 		Debug.Log ("After " + currentVideoIndex);
@@ -113,20 +112,33 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 		//Color planeColor = videoManagers [currentVideoIndex].GetComponent<MeshRenderer> ().materials[0].color;
 		//planeColor.a = 0;
 		//videoManagers [currentVideoIndex].GetComponent<MeshRenderer> ().materials[0].color = planeColor;
-		MediaPlayerCtrlCustom mpcc = videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom> ();
 
-		videoManagers [currentVideoIndex].gameObject.transform.Translate (0, -100, 0);
-		videoManagers [currentVideoIndex - 1].gameObject.transform.Translate (0, 100, 0);
 		// callback to fullscreen script to resize the plane
 		//mdpFSC.SetNewVM(videoManagers[currentVideoIndex]);
 		// Reset the video and play
 		//mpcc.Stop();
 		//mpcc.SeekTo(200);
-		if (currentVideoIndex == 8) {
-			videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom>().Load(""+strVideoName[currentVideoIndex]);
+		if (currentVideoIndex == 8) {			
+			Debug.Log ("Force change 8 ! :" + currentVideoIndex);
+			videoManagers [currentVideoIndex - 1].gameObject.transform.Translate (0, 100, 0);
+			videoManagers [currentVideoIndex].gameObject.SetActive(false);
+			videoManagers [8].gameObject.SetActive (true);
+			videoManagers [8].gameObject.transform.Translate (0, -100, 0);			
+			videoManagers [8].GetComponent<MediaPlayerCtrlCustom> ().Stop();
+			videoManagers [8].GetComponent<MediaPlayerCtrlCustom> ().Play();
+		} else {
+			//videoManagers [currentVideoIndex+1].GetComponent<MediaPlayerCtrlCustom>().gameObject.SetActive(true);
+			MediaPlayerCtrlCustom mpcc = videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom> ();
+			videoManagers [currentVideoIndex].gameObject.transform.Translate (0, -100, 0);
+			videoManagers [currentVideoIndex - 1].gameObject.transform.Translate (0, 100, 0);
+			mpcc.Stop ();
+			mpcc.Play ();
 		}
-		mpcc.Stop();
-		mpcc.Play();
+		if (currentVideoIndex == 7) {			
+			Debug.Log ("Preload " + currentVideoIndex);
+			//videoManagers[8].GetComponent<MeshRenderer>().
+			videoManagers[8].GetComponent<MediaPlayerCtrlCustom> ().Load ("Ball-RA-09.mp4");
+		}
 	}
 
 	private void LoadPrevVideo(){
