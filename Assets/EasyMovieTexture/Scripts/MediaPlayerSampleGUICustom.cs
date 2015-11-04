@@ -14,7 +14,10 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 	public GameObject[] videoManagers;
 	
 	private int nextPrevSizeDivider = 8;
+
 	private int currentVideoIndex = 0;
+	private int currentVideoIndex2 = 0;
+
 	private int dividerW = 12;
 	private int dividerH = 16;
 	// Height and width of the buttons, directly defined by the dividers
@@ -32,10 +35,17 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 	public bool hideGUI;
 	// Array of positions of the next button, one index for one animation (video)
 	private float[] posXNextAnimBtn;
-	private float[] posYNextAnimBtn; 
+	private float[] posYNextAnimBtn;
+	// Array of positions of the next button n2, one index for one animation (video)
+	private float[] posXNextAnimBtn2;
+	private float[] posYNextAnimBtn2; 
 	
 	private float[] sizeBtnModifierX; 	
 	private float[] sizeBtnModifierY; 
+
+	//index where we begin to preload the video
+	private int f_indexTexturePreLastVid ;
+	private int f_indexTextureLastVid;
 
 	//private Boolean didBug = false;
 
@@ -49,7 +59,8 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
+		f_indexTexturePreLastVid = 3;
+		f_indexTextureLastVid = videoManagers.Length-1;
 
 		//scrMedia.OnEnd += OnEnd;
 		btnWidth = Screen.width/dividerW; 
@@ -68,11 +79,14 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 		sizeBtnModifierY = new float[8]{ 3, 3, 3, 3, 3, 3, 3, 3};
 		*/
 		
-		posXNextAnimBtn = new float[8]{ 8, 15, 12, 17, 16.75f, 16.75f, 15, 4};
-		posYNextAnimBtn = new float[8]{ 1, 0, 2, 2, 13.75f,  13.75f, 4, 15};
-		
-		sizeBtnModifierX = new float[8]{ 6, 5, 5, 3, 4, 4, 3, 3};		
-		sizeBtnModifierY = new float[8]{ 7, 5, 8, 14, 8, 8, 5, 5};
+		posXNextAnimBtn = new float[8]{ 8, 15, 12, 17, 16.75f, 16.75f, 16, 2};
+		posYNextAnimBtn = new float[8]{ 1, 0, 2, 0, 13.75f,  13.75f, 2.5f, 2};
+
+		posXNextAnimBtn2 = new float[2]{ 2, 17};
+		posYNextAnimBtn2 = new float[2]{ 16, 17};
+
+		sizeBtnModifierX = new float[8]{ 6, 5, 5, 4, 4, 4, 2.75f, 2.75f};		
+		sizeBtnModifierY = new float[8]{ 7, 5, 8, 16, 8, 8, 5, 5};
 		//mdpFSC = GetComponent<MediaPlayerFullScreenCtrlCustom> ();		
 		//mdpFSC.SetNewVM(videoManagers[0]);
 		
@@ -99,14 +113,14 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 	}
 
 	private void LoadNextVideo(){
-		Debug.Log (currentVideoIndex);
+		//Debug.Log (currentVideoIndex);
 		videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom> ().gameObject.SetActive (false);
 		if (currentVideoIndex < videoManagers.Length - 2) {
 			videoManagers [currentVideoIndex + 2].GetComponent<MediaPlayerCtrlCustom> ().gameObject.SetActive (true);
 		}
 		// Change current plane visibility with renderer
 		currentVideoIndex += 1;
-		Debug.Log ("After " + currentVideoIndex);
+		//Debug.Log ("After " + currentVideoIndex);
 		//videoManagers[currentVideoIndex].GetComponent<MeshRenderer>().enabled = true;
 		//videoManagers[currentVideoIndex-1].GetComponent<MeshRenderer>().enabled = false;
 		//Color planeColor = videoManagers [currentVideoIndex].GetComponent<MeshRenderer> ().materials[0].color;
@@ -118,14 +132,15 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 		// Reset the video and play
 		//mpcc.Stop();
 		//mpcc.SeekTo(200);
-		if (currentVideoIndex == 8) {			
-			Debug.Log ("Force change 8 ! :" + currentVideoIndex);
+
+		if (currentVideoIndex == f_indexTextureLastVid) {			
+			//Debug.Log ("Force change 8 ! :" + currentVideoIndex);
 			videoManagers [currentVideoIndex - 1].gameObject.transform.Translate (0, 100, 0);
 			videoManagers [currentVideoIndex].gameObject.SetActive(false);
-			videoManagers [8].gameObject.SetActive (true);
-			videoManagers [8].gameObject.transform.Translate (0, -100, 0);			
-			videoManagers [8].GetComponent<MediaPlayerCtrlCustom> ().Stop();
-			videoManagers [8].GetComponent<MediaPlayerCtrlCustom> ().Play();
+			videoManagers [f_indexTexturePreLastVid].gameObject.SetActive (true);
+			videoManagers [f_indexTexturePreLastVid].gameObject.transform.Translate (0, -100, 0);			
+			videoManagers [f_indexTexturePreLastVid].GetComponent<MediaPlayerCtrlCustom> ().Stop();
+			videoManagers [f_indexTexturePreLastVid].GetComponent<MediaPlayerCtrlCustom> ().Play();
 		} else {
 			//videoManagers [currentVideoIndex+1].GetComponent<MediaPlayerCtrlCustom>().gameObject.SetActive(true);
 			MediaPlayerCtrlCustom mpcc = videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom> ();
@@ -134,10 +149,11 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 			mpcc.Stop ();
 			mpcc.Play ();
 		}
-		if (currentVideoIndex == 7) {			
-			Debug.Log ("Preload " + currentVideoIndex);
-			//videoManagers[8].GetComponent<MeshRenderer>().
-			videoManagers[8].GetComponent<MediaPlayerCtrlCustom> ().Load ("Ball-RA-09.mp4");
+		if (currentVideoIndex == f_indexTextureLastVid-1) {			
+			//Debug.Log ("Preload " + currentVideoIndex);
+			Material material = Resources.Load("bg_09", typeof(Material)) as Material;
+			videoManagers[f_indexTexturePreLastVid].GetComponent<MeshRenderer>().material = material;
+			videoManagers[f_indexTexturePreLastVid].GetComponent<MediaPlayerCtrlCustom> ().Load ("Ball-RA-09.mp4");
 		}
 	}
 
@@ -161,8 +177,8 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 
 		if (currentVideoIndex == 0 || mpcc.GetSeekPosition () == mpcc.GetDuration () || mpcc.GetDuration () == 0) {
 
-
-			if (GUI.RepeatButton (new Rect (0, (Screen.height) - (Screen.width / nextPrevSizeDivider), Screen.width / nextPrevSizeDivider, Screen.width / nextPrevSizeDivider), "Previous")) {
+			//Previous
+			if (GUI.RepeatButton (new Rect (0, 0, Screen.width / nextPrevSizeDivider, Screen.width / nextPrevSizeDivider), "")) {
 				if (currentVideoIndex != 0) {
 					LoadPrevVideo ();
 					//scrMedia.Play();
@@ -170,53 +186,55 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 				}
 			}
 			
-			// Go to previous animation
-			if (GUI.RepeatButton (new Rect (0, 0, Screen.width / nextPrevSizeDivider, Screen.width / nextPrevSizeDivider), "Next")) {
-				
-				if (currentVideoIndex < strVideoName.Length - 1) {
-					LoadNextVideo ();
-					m_bFinish = false;
-				} else {
-					Application.LoadLevel (strNextScene);
+			// Go to Next animation - Desactivated when the NextAnimation button is also at the corner of the screen (when we open the corner to reveal the ball
+			if(currentVideoIndex != 1 && currentVideoIndex != 2 && currentVideoIndex != 3){
+				if (GUI.RepeatButton (new Rect (Screen.width - (Screen.width / nextPrevSizeDivider), 0, Screen.width / nextPrevSizeDivider, Screen.width / nextPrevSizeDivider), "")) {
+					
+					if (currentVideoIndex < strVideoName.Length - 1) {
+						LoadNextVideo ();
+						m_bFinish = false;
+					} else {
+						Application.LoadLevel (strNextScene);
+					}
 				}
-
 			}
-			
 			//try{
 
 			// If we are at the seventh animation, the following animations will have two NextAnimation buttons because there is two balls 
 			// I switched the X and Y positions since the buttons just have to be positionned symmetrically
 			// 5 bcoz there is 8 animations, so 8-1-2 because we are in an array and this behaviour must be actived from the sixth animation
-			/*if (currentVideoIndex > 5 && currentVideoIndex < strVideoName.Length-1) {
-
+			if (currentVideoIndex > 5 && currentVideoIndex < strVideoName.Length-1) {
+				//Debug.Log ("currentVideoIndex :"+ currentVideoIndex);
 				Rect btn = new Rect (posXNextAnimBtn [currentVideoIndex] * sUnitX, posYNextAnimBtn [currentVideoIndex] * sUnitY, 
 				                    btnWidth * sizeBtnModifierX [currentVideoIndex], btnHeight * sizeBtnModifierY [currentVideoIndex]);
 
-				Rect btn2 = new Rect (posYNextAnimBtn [currentVideoIndex] * sUnitX, posXNextAnimBtn [currentVideoIndex] * sUnitY, 
+				Rect btn2 = new Rect (posXNextAnimBtn2 [currentVideoIndex2] * sUnitX, posYNextAnimBtn2 [currentVideoIndex2] * sUnitY, 
 				                      btnWidth * sizeBtnModifierX [currentVideoIndex], btnHeight * sizeBtnModifierY [currentVideoIndex]);
-
-				bool bBtn = GUI.RepeatButton (btn, "NextAnim");
-				bool bBtn2 = GUI.RepeatButton (btn2, "NextAnim2");
+				//Next Animation - Next Animation 2
+				bool bBtn = GUI.RepeatButton (btn, "");
+				bool bBtn2 = GUI.RepeatButton (btn2, "");
 				if ((bBtn | bBtn2) || (bBtn && bBtn2)) {
 					if (currentVideoIndex < strVideoName.Length-1) {
 						LoadNextVideo ();
 						m_bFinish = false;
+						currentVideoIndex2+=1;
+					}					
+				}
+			} else {
+				// Next Animation moving around the screen
+				if (currentVideoIndex < strVideoName.Length - 1) {
+
+					if (GUI.RepeatButton (new Rect (posXNextAnimBtn [currentVideoIndex] * sUnitX, posYNextAnimBtn [currentVideoIndex] * sUnitY, btnWidth * sizeBtnModifierX [currentVideoIndex], btnHeight * sizeBtnModifierY [currentVideoIndex]), "")) {
+						//Debug.Log ("NextAnimationBefore");
+						if (currentVideoIndex < strVideoName.Length - 1) {
+							//Debug.Log ("Video index courant =" + currentVideoIndex);						
+							//Debug.Log ("NextAnimationInCondition");
+							LoadNextVideo ();
+							m_bFinish = false;
+						}
 					}
 				}
-			} else */
-
-			if (currentVideoIndex < strVideoName.Length - 1) {
-
-				if (GUI.RepeatButton (new Rect (posXNextAnimBtn [currentVideoIndex] * sUnitX, posYNextAnimBtn [currentVideoIndex] * sUnitY, btnWidth * sizeBtnModifierX [currentVideoIndex], btnHeight * sizeBtnModifierY [currentVideoIndex]), "NextAnimation")) {
-					//Debug.Log ("NextAnimationBefore");
-					if (currentVideoIndex < strVideoName.Length - 1) {
-						//Debug.Log ("Video index courant =" + currentVideoIndex);						
-						//Debug.Log ("NextAnimationInCondition");
-						LoadNextVideo ();
-						m_bFinish = false;
-					}
-				}
-			}		
+			}
 		}
 	}
 	
