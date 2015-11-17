@@ -39,9 +39,5 @@ public class MediaPlayerFullScreenCtrlCustom : MonoBehaviour {
 		m_objVideo.transform.localScale = new Vector3( 20.0f / fRatio, 20.0f / fRatio, 1.0f);
 		
 		m_objVideo.transform.GetComponent<MediaPlayerCtrlCustom>().Resize();
-	}
-	
-	
-	
-	
+	}	
 }

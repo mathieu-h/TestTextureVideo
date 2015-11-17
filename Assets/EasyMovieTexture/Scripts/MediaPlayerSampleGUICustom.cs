@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.UI;
 
 public class MediaPlayerSampleGUICustom : MonoBehaviour {
 	
@@ -8,8 +9,11 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 	
 	public string strNextScene;
 
+	public Text consoleText;
+	public Text consoleText2;
+	public Text consoleDuration;	
+	public Text consoleEnd;
 
-	
 	public string[] strVideoName;
 	public GameObject[] videoManagers;
 	
@@ -110,6 +114,18 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 		//Debug.Log ("First video isPlayed");
 		//mpccInit.Stop();
 		//mpccInit.Play();
+		// Go to previous animation
+		
+		MediaPlayerCtrlCustom mpcc = videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom> ();
+		try{
+			if(mpcc != null){
+				consoleDuration.text = " Duration : " + mpcc.GetDuration ();
+			}else{
+				consoleDuration.text = " No mpcc";
+			}		
+		}catch(Exception e){
+			consoleText2.text = ""+e.Message;
+		}
 	}
 
 	private void LoadNextVideo(){
@@ -120,18 +136,7 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 		}
 		// Change current plane visibility with renderer
 		currentVideoIndex += 1;
-		//Debug.Log ("After " + currentVideoIndex);
-		//videoManagers[currentVideoIndex].GetComponent<MeshRenderer>().enabled = true;
-		//videoManagers[currentVideoIndex-1].GetComponent<MeshRenderer>().enabled = false;
-		//Color planeColor = videoManagers [currentVideoIndex].GetComponent<MeshRenderer> ().materials[0].color;
-		//planeColor.a = 0;
-		//videoManagers [currentVideoIndex].GetComponent<MeshRenderer> ().materials[0].color = planeColor;
 
-		// callback to fullscreen script to resize the plane
-		//mdpFSC.SetNewVM(videoManagers[currentVideoIndex]);
-		// Reset the video and play
-		//mpcc.Stop();
-		//mpcc.SeekTo(200);
 
 		if (currentVideoIndex == f_indexTextureLastVid) {			
 			//Debug.Log ("Force change 8 ! :" + currentVideoIndex);
@@ -171,76 +176,96 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 		{
 			GUI.backgroundColor = Color.clear;
 		}
+
 		//Debug.Log ("Video index courant =" + currentVideoIndex);
 		MediaPlayerCtrlCustom mpcc = videoManagers [currentVideoIndex].GetComponent<MediaPlayerCtrlCustom> ();
 		// Go to previous animation		
+		try{
+			/*
+			if(mpcc != null){
+				consoleDuration.text = " Duration :" + mpcc.GetDuration ();
+			}else{
+				consoleDuration.text = " No mpcc";
+			}*/
 
-		if (currentVideoIndex == 0 || mpcc.GetSeekPosition () == mpcc.GetDuration () || mpcc.GetDuration () == 0) {
+			if (currentVideoIndex == 0 || currentVideoIndex == videoManagers.Length /*|| mpcc.GetSeekPosition () == mpcc.GetDuration () || || mpcc.GetDuration () == 0*/) {
 
-			//Previous
-			if (GUI.RepeatButton (new Rect (0, 0, Screen.width / nextPrevSizeDivider, Screen.width / nextPrevSizeDivider), "")) {
-				if (currentVideoIndex != 0) {
-					LoadPrevVideo ();
-					//scrMedia.Play();
-					m_bFinish = false;
-				}
-			}
-			
-			// Go to Next animation - Desactivated when the NextAnimation button is also at the corner of the screen (when we open the corner to reveal the ball
-			if(currentVideoIndex != 1 && currentVideoIndex != 2 && currentVideoIndex != 3){
-				if (GUI.RepeatButton (new Rect (Screen.width - (Screen.width / nextPrevSizeDivider), 0, Screen.width / nextPrevSizeDivider, Screen.width / nextPrevSizeDivider), "")) {
-					
-					if (currentVideoIndex < strVideoName.Length - 1) {
-						LoadNextVideo ();
+				//Previous
+				if (GUI.RepeatButton (new Rect (0, 0, Screen.width / nextPrevSizeDivider, Screen.width / nextPrevSizeDivider), "")) {
+					if (currentVideoIndex != 0) {
+						LoadPrevVideo ();
+						//scrMedia.Play();
 						m_bFinish = false;
-					} else {
-						Application.LoadLevel (strNextScene);
 					}
 				}
-			}
-			//try{
-
-			// If we are at the seventh animation, the following animations will have two NextAnimation buttons because there is two balls 
-			// I switched the X and Y positions since the buttons just have to be positionned symmetrically
-			// 5 bcoz there is 8 animations, so 8-1-2 because we are in an array and this behaviour must be actived from the sixth animation
-			if (currentVideoIndex > 5 && currentVideoIndex < strVideoName.Length-1) {
-				//Debug.Log ("currentVideoIndex :"+ currentVideoIndex);
-				Rect btn = new Rect (posXNextAnimBtn [currentVideoIndex] * sUnitX, posYNextAnimBtn [currentVideoIndex] * sUnitY, 
-				                    btnWidth * sizeBtnModifierX [currentVideoIndex], btnHeight * sizeBtnModifierY [currentVideoIndex]);
-
-				Rect btn2 = new Rect (posXNextAnimBtn2 [currentVideoIndex2] * sUnitX, posYNextAnimBtn2 [currentVideoIndex2] * sUnitY, 
-				                      btnWidth * sizeBtnModifierX [currentVideoIndex], btnHeight * sizeBtnModifierY [currentVideoIndex]);
-				//Next Animation - Next Animation 2
-				bool bBtn = GUI.RepeatButton (btn, "");
-				bool bBtn2 = GUI.RepeatButton (btn2, "");
-				if ((bBtn | bBtn2) || (bBtn && bBtn2)) {
-					if (currentVideoIndex < strVideoName.Length-1) {
-						LoadNextVideo ();
-						m_bFinish = false;
-						currentVideoIndex2+=1;
-					}					
-				}
-			} else {
-				// Next Animation moving around the screen
-				if (currentVideoIndex < strVideoName.Length - 1) {
-
-					if (GUI.RepeatButton (new Rect (posXNextAnimBtn [currentVideoIndex] * sUnitX, posYNextAnimBtn [currentVideoIndex] * sUnitY, btnWidth * sizeBtnModifierX [currentVideoIndex], btnHeight * sizeBtnModifierY [currentVideoIndex]), "")) {
-						//Debug.Log ("NextAnimationBefore");
+				
+				// Go to Next animation - Desactivated when the NextAnimation button is also at the corner of the screen (when we open the corner to reveal the ball
+				if (currentVideoIndex != 1 && currentVideoIndex != 2 && currentVideoIndex != 3) {
+					if (GUI.RepeatButton (new Rect (Screen.width - (Screen.width / nextPrevSizeDivider), 0, Screen.width / nextPrevSizeDivider, Screen.width / nextPrevSizeDivider), "")) {
+						
 						if (currentVideoIndex < strVideoName.Length - 1) {
-							//Debug.Log ("Video index courant =" + currentVideoIndex);						
-							//Debug.Log ("NextAnimationInCondition");
 							LoadNextVideo ();
 							m_bFinish = false;
+						} else {
+							Application.LoadLevel (strNextScene);
 						}
 					}
 				}
+				//try{
+
+				// If we are at the seventh animation, the following animations will have two NextAnimation buttons because there is two balls 
+				// I switched the X and Y positions since the buttons just have to be positionned symmetrically
+				// 5 bcoz there is 8 animations, so 8-1-2 because we are in an array and this behaviour must be actived from the sixth animation
+				if (currentVideoIndex > 5 && currentVideoIndex < strVideoName.Length - 1) {
+					//Debug.Log ("currentVideoIndex :"+ currentVideoIndex);
+					Rect btn = new Rect (posXNextAnimBtn [currentVideoIndex] * sUnitX, posYNextAnimBtn [currentVideoIndex] * sUnitY, 
+					                    btnWidth * sizeBtnModifierX [currentVideoIndex], btnHeight * sizeBtnModifierY [currentVideoIndex]);
+
+					Rect btn2 = new Rect (posXNextAnimBtn2 [currentVideoIndex2] * sUnitX, posYNextAnimBtn2 [currentVideoIndex2] * sUnitY, 
+					                      btnWidth * sizeBtnModifierX [currentVideoIndex], btnHeight * sizeBtnModifierY [currentVideoIndex]);
+					//Next Animation - Next Animation 2
+					bool bBtn = GUI.RepeatButton (btn, "");
+					bool bBtn2 = GUI.RepeatButton (btn2, "");
+					if ((bBtn | bBtn2) || (bBtn && bBtn2)) {
+						if (currentVideoIndex < strVideoName.Length - 1) {						
+							consoleText.text = "Yiiiih";
+							LoadNextVideo ();
+							m_bFinish = false;
+							currentVideoIndex2 += 1;
+						}					
+					}
+				} else {
+					// Next Animation moving around the screen
+					if (currentVideoIndex < strVideoName.Length - 1) {
+
+						if (GUI.RepeatButton (new Rect (posXNextAnimBtn [currentVideoIndex] * sUnitX, posYNextAnimBtn [currentVideoIndex] * sUnitY, btnWidth * sizeBtnModifierX [currentVideoIndex], btnHeight * sizeBtnModifierY [currentVideoIndex]), "")) {
+							//Debug.Log ("NextAnimationBefore");
+							if (currentVideoIndex < strVideoName.Length - 1) {
+								//Debug.Log ("Video index courant =" + currentVideoIndex);						
+								//Debug.Log ("NextAnimationInCondition");
+								LoadNextVideo ();
+								m_bFinish = false;
+							}
+						}
+					}
+				}
+
+			} else if (mpcc.GetDuration () != 0 && mpcc.GetSeekPosition () == mpcc.GetDuration ()) {
+				//Debug.Log ("Happened");
+				consoleText.text = "Yay";
+			} else if (mpcc.GetDuration () == 0) {			
+				consoleText2.text = " " + currentVideoIndex;
+				LoadNextVideo();
 			}
+		}catch(Exception e){
+			consoleText2.text = ""+e.Message;
 		}
 	}
 	
 	void OnEnd()
 	{
 		//scrMedia.Pause ();
+		consoleEnd.text = "Finished";
 		m_bFinish = true;
 	}
 }
