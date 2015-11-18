@@ -255,7 +255,9 @@ public class MediaPlayerSampleGUICustom : MonoBehaviour {
 				consoleText.text = "Yay";
 			} else if (mpcc.GetDuration () == 0) {			
 				consoleText2.text = " " + currentVideoIndex;
-				LoadNextVideo();
+				if(	currentVideoIndex < videoManagers.Length - 1 ){
+					LoadNextVideo();
+				}
 			}
 		}catch(Exception e){
 			consoleText2.text = ""+e.Message;
